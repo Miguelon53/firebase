@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Citas Dentales</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fffbea;
+      color: #5c4400;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #e0a800;
+    }
+
+    form {
+      background-color: #fff8dc;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 1em;
+      border: 1px solid #d4af37;
+      border-radius: 6px;
+    }
+
+    button {
+      background-color: #e0a800;
+      color: white;
+      border: none;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #c69500;
+    }
+
+    .success {
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Registro de Citas</h1>
+
+  <form id="appointmentForm">
+    <label>Nombre completo:</label>
+    <input type="text" id="name" required />
+
+    <label>Correo electrónico:</label>
+    <input type="email" id="email" required />
+
+    <label>Teléfono:</label>
+    <input type="tel" id="phone" required />
+
+    <label>Fecha de la cita:</label>
+    <input type="date" id="date" required />
+
+    <label>Motivo de la cita:</label>
+    <textarea id="reason" rows="3" required></textarea>
+
+    <button type="submit">Registrar cita</button>
+  </form>
+
+  <div class="success" id="successMsg" style="display:none;">🎉 ¡Cita registrada con éxito!</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyARSEmOdyj9uy63EZR4VxpC7rPE4L57j-I",
+      authDomain: "e1549-4dc9a.firebaseapp.com",
+      projectId: "e1549-4dc9a",
+      storageBucket: "e1549-4dc9a.firebasestorage.app",
+      messagingSenderId: "1046555169059",
+      appId: "1:1046555169059:web:220b415a63dce614387c96"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("appointmentForm");
+    const successMsg = document.getElementById("successMsg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const date = document.getElementById("date").value;
+      const reason = document.getElementById("reason").value;
+
+      try {
+        await addDoc(collection(db, "citas"), {
+          name,
+          email,
+          phone,
+          date,
+          reason,
+          timestamp: new Date()
+        });
+
+        successMsg.style.display = "block";
+        form.reset();
+      } catch (error) {
+        alert("Error al registrar la cita: " + error.message);
+      }
+    });
+  </script>
+
+</body>
+</html>
